@@ -78,18 +78,20 @@ public final class ImageManager : ObservableObject {
                 // So previous View struct call `onDisappear` and cancel the currentOperation
                 return
             }
-            self.image = image
-            self.error = error
-            self.isIncremental = !finished
-            if finished {
-                self.imageData = data
-                self.cacheType = cacheType
-                self.indicatorStatus.isLoading = false
-                self.indicatorStatus.progress = 1
-                if let image = image {
-                    self.successBlock?(image, data, cacheType)
-                } else {
-                    self.failureBlock?(error ?? NSError())
+            DispatchQueue.main.async {
+                self.image = image
+                self.error = error
+                self.isIncremental = !finished
+                if finished {
+                    self.imageData = data
+                    self.cacheType = cacheType
+                    self.indicatorStatus.isLoading = false
+                    self.indicatorStatus.progress = 1
+                    if let image = image {
+                        self.successBlock?(image, data, cacheType)
+                    } else {
+                        self.failureBlock?(error ?? NSError())
+                    }
                 }
             }
         }
